@@ -44,16 +44,13 @@ fn setup_physics(mut commands: Commands) {
     .insert(Collider::cuboid(0.5, 0.5))
     .id();
 
-    // let joint = RevoluteJointBuilder::new().local_anchor1(Vec2::new(0.0, 0.0));
-    let mass_size = 10.0;
-    let rope_length = 100.0;
-    let joint = RopeJointBuilder::new(rope_length).local_anchor2(Vec2::new(rope_length, 0.0));
+    let joint = RevoluteJointBuilder::new().local_anchor2(Vec2::new(0.0, PENDULUM_HEIGHT));
     commands
             .spawn((
                 SpriteBundle{
                     transform: Transform {
-                        translation: Vec3::new(PENDULUM_CART_WIDTH/2.0+1.0, rope_length*2.0, 0.0),
-                        scale: Vec3::new(mass_size, mass_size, 1.0),
+                        translation: Vec3::new(0.0, PENDULUM_HEIGHT, 0.0),
+                        scale: Vec3::new(PENDULUM_WIDTH, PENDULUM_WIDTH, 1.0),
                         ..default()
                     },
                     ..default()
