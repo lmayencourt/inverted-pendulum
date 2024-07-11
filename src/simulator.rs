@@ -12,6 +12,12 @@ use bevy_rapier2d::prelude::*;
 
 pub struct SimulatorPlugin;
 
+/// Color used to draw the pendulum
+pub const COLOR_GREEN: Color = Color::rgb(134.0/255.0, 161.0/255.0, 99.0/255.0);
+pub const COLOR_ORANGE: Color = Color::rgb(198.0/255.0, 113.0/255.0, 94.0/255.0);
+pub const COLOR_BLUE: Color = Color::rgb(132.0/255.0, 166.0/255.0, 199.0/255.0);
+pub const COLOR_WHITE: Color = Color::rgb(233.0/255.0, 228.0/255.0, 217.0/255.0);
+
 /// Cart component for control queries
 #[derive(Component)]
 pub struct Cart;
@@ -32,7 +38,7 @@ pub struct Pendulum {
     above_cart: bool,
 }
 /// Pendulum size
-const PENDULUM_WIDTH: f32 = 20.0;
+pub const PENDULUM_RADIUS: f32 = 10.0;
 const PENDULUM_HEIGHT: f32 = 100.0;
 /// Cart physics constants
 const PENDULUM_MASS: f32 = 10.0;
@@ -71,16 +77,11 @@ fn setup_physics(
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut commands: Commands
 ) {
-    let color_green = Color::rgb(134.0/255.0, 161.0/255.0, 99.0/255.0);
-    let color_orange = Color::rgb(198.0/255.0, 113.0/255.0, 94.0/255.0);
-    let color_blue = Color::rgb(132.0/255.0, 166.0/255.0, 199.0/255.0);
-    let color_white = Color::rgb(233.0/255.0, 228.0/255.0, 217.0/255.0);
-
     // Create the pendulum cart
     let parent = commands.spawn(
         MaterialMesh2dBundle {
             mesh: Mesh2dHandle(meshes.add(Capsule2d{radius: PENDULUM_CART_WIDTH/4.0, half_length: PENDULUM_CART_HEIGHT/2.0})),
-            material: materials.add(color_blue),
+            material: materials.add(COLOR_BLUE),
             transform: Transform {
                 translation: Vec3::splat(0.0),
                 rotation: Quat::from_rotation_z(3.1415/2.0),
@@ -104,8 +105,8 @@ fn setup_physics(
     commands
             .spawn((
                 MaterialMesh2dBundle {
-                    mesh: Mesh2dHandle(meshes.add(Circle{radius: 10.0})),
-                    material: materials.add(color_orange),
+                    mesh: Mesh2dHandle(meshes.add(Circle{radius: PENDULUM_RADIUS})),
+                    material: materials.add(COLOR_ORANGE),
                     transform: Transform {
                         translation: Vec3::new(0.0, PENDULUM_HEIGHT, 0.0),
                         ..default()
@@ -124,7 +125,7 @@ fn setup_physics(
     commands.spawn(
         MaterialMesh2dBundle {
             mesh: Mesh2dHandle(meshes.add(Capsule2d{radius: 2.0, half_length: TRACK_WIDTH})),
-            material: materials.add(color_white),
+            material: materials.add(COLOR_WHITE),
             transform: Transform {
                 translation: Vec3::new(0.0, 0.0, -10.0),
                 rotation: Quat::from_rotation_z(3.1415/2.0),
