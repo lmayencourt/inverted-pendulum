@@ -4,7 +4,10 @@
  * Provides the windows and physics simulation
  */
 
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    sprite::{MaterialMesh2dBundle, Mesh2dHandle},
+};
 use bevy_rapier2d::prelude::*;
 
 pub struct SimulatorPlugin;
@@ -42,15 +45,23 @@ fn setup_graphics(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
 }
 
-fn setup_physics(mut commands: Commands) {
-    let parent = commands.spawn(SpriteBundle{
-        transform: Transform {
-            translation: Vec3::new(0.0, 0.0, 0.0),
-            scale: Vec3::new(PENDULUM_CART_WIDTH, PENDULUM_CART_HEIGHT, 1.0),
+fn setup_physics(
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+    mut commands: Commands
+) {
+
+    let parent = commands.spawn(
+        MaterialMesh2dBundle {
+            mesh: Mesh2dHandle(meshes.add(Capsule2d{radius: PENDULUM_CART_WIDTH/4.0, half_length: PENDULUM_CART_HEIGHT/2.0})),
+            material: materials.add(Color::rgb(132.0/255.0, 166.0/255.0, 199.0/255.0)),
+            transform: Transform {
+                translation: Vec3::splat(0.0),
+                rotation: Quat::from_rotation_z(3.1415/2.0),
+                ..default()
+            },
             ..default()
-        },
-        ..default()
-    })
+        })
     .insert(Cart)
     .insert(RigidBody::Dynamic)
     .insert(Collider::cuboid(0.5, 0.5))
@@ -64,16 +75,17 @@ fn setup_physics(mut commands: Commands) {
     let joint = RevoluteJointBuilder::new().local_anchor2(Vec2::new(0.0, PENDULUM_HEIGHT));
     commands
             .spawn((
-                SpriteBundle{
+                MaterialMesh2dBundle {
+                    mesh: Mesh2dHandle(meshes.add(Circle{radius: 10.0})),
+                    material: materials.add(Color::rgb(132.0/255.0, 166.0/255.0, 199.0/255.0)),
                     transform: Transform {
                         translation: Vec3::new(0.0, PENDULUM_HEIGHT, 0.0),
-                        scale: Vec3::new(PENDULUM_WIDTH, PENDULUM_WIDTH, 1.0),
                         ..default()
                     },
                     ..default()
                 },
                 RigidBody::Dynamic,
-                Collider::cuboid(0.5, 0.5),
+                Collider::ball(0.5),
                 ColliderMassProperties::Mass(PENDULUM_MASS),
                 GravityScale(1.0),
             ))
