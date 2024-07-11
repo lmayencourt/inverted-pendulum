@@ -33,8 +33,8 @@ const MOVING_FORCE: f32 = CART_MASS / 2.0 * 10.0 * MAX_CART_SPEED;
 /// Pendulum component for queries
 #[derive(Component)]
 pub struct Pendulum {
-    tilt_angle: f32,
-    position_error: f32,
+    pub tilt_angle: f32,
+    pub position_error: f32,
     above_cart: bool,
 }
 /// Pendulum size
