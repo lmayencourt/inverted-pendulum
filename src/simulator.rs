@@ -24,6 +24,13 @@ const MAX_CART_SPEED: f32 = 250.0;
 // Force to apply to reach MAX_CART_SPEED in 2 secs
 const MOVING_FORCE: f32 = CART_MASS / 2.0 * 10.0 * MAX_CART_SPEED;
 
+/// Pendulum component for queries
+#[derive(Component)]
+pub struct Pendulum {
+    tilt_angle: f32,
+    position_error: f32,
+    above_cart: bool,
+}
 /// Pendulum size
 const PENDULUM_WIDTH: f32 = 20.0;
 const PENDULUM_HEIGHT: f32 = 100.0;
@@ -33,6 +40,16 @@ const PENDULUM_MASS: f32 = 10.0;
 /// Track size
 const TRACK_WIDTH: f32 = 320.0;
 
+impl Default for Pendulum {
+    fn default() -> Self {
+        Pendulum {
+            tilt_angle: 0.0,
+            position_error: 0.0,
+            above_cart: false,
+        }
+    }
+}
+
 impl Plugin for SimulatorPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0));
@@ -41,6 +58,7 @@ impl Plugin for SimulatorPlugin {
         app.add_systems(Startup, setup_physics);
         app.add_systems(Update, bevy::window::close_on_esc);
         app.add_systems(FixedUpdate, cart_control);
+        app.add_systems(FixedUpdate, calculate_pendulum_state);
     }
 }
 
@@ -94,6 +112,7 @@ fn setup_physics(
                     },
                     ..default()
                 },
+                Pendulum::default(),
                 RigidBody::Dynamic,
                 Collider::ball(10.0),
                 ColliderMassProperties::Mass(PENDULUM_MASS),
@@ -157,4 +176,18 @@ fn limit_horizontal_position(
         transform.translation.x = -TRACK_WIDTH;
         velocity.linvel.x = 0.0;
     }
+}
+
+fn calculate_pendulum_state(
+    cart_query: Query<&Transform, With<Cart>>,
+    mut pendulum_query: Query<(&mut Pendulum, &Transform)>,
+) {
+    let cart = cart_query.single();
+    let (mut pendulum, pendulum_translation) = pendulum_query.single_mut();
+
+    pendulum.tilt_angle = f32::to_degrees(f32::asin((cart.translation.x - pendulum_translation.translation.x)/PENDULUM_HEIGHT));
+    pendulum.position_error = cart.translation.x;
+    pendulum.above_cart = pendulum_translation.translation.y > cart.translation.y;
+
+    println!("tilt {}, pos {}, above cart {}", pendulum.tilt_angle, pendulum.position_error, pendulum.above_cart);
 }
