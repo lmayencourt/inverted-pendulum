@@ -78,6 +78,7 @@ fn setup_physics(
     .insert(Velocity::default())
     .insert(LockedAxes::ROTATION_LOCKED)
     .insert(LockedAxes::TRANSLATION_LOCKED_Y)
+    .insert(Sleeping::disabled())
     .id();
 
     // Create the pendulum mass
