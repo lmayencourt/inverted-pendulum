@@ -186,9 +186,18 @@ fn calculate_pendulum_state(
     let cart = cart_query.single();
     let (mut pendulum, pendulum_translation) = pendulum_query.single_mut();
 
-    pendulum.tilt_angle = f32::to_degrees(f32::asin((cart.translation.x - pendulum_translation.translation.x)/PENDULUM_HEIGHT));
     pendulum.position_error = cart.translation.x;
     pendulum.above_cart = pendulum_translation.translation.y > cart.translation.y;
+    pendulum.tilt_angle = f32::to_degrees(f32::asin((pendulum_translation.translation.x - cart.translation.x)/PENDULUM_HEIGHT));
+    if !pendulum.above_cart {
+        if pendulum_translation.translation.x > cart.translation.x {
+            // pendulum is at the right side of the cart
+            pendulum.tilt_angle = 180.0 - pendulum.tilt_angle;
+        } else {
+            // pendulum is at the left side of the cart
+            pendulum.tilt_angle = -180.0 - pendulum.tilt_angle;
+        }
+    }
 
     println!("tilt {}, pos {}, above cart {}", pendulum.tilt_angle, pendulum.position_error, pendulum.above_cart);
 }
