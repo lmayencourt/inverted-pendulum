@@ -33,9 +33,10 @@ pub const MOVING_FORCE: f32 = CART_MASS / 2.0 * 10.0 * MAX_CART_SPEED;
 /// Pendulum component for queries
 #[derive(Component)]
 pub struct Pendulum {
+    pub applied_force: f32,
     pub tilt_angle: f32,
     pub position_error: f32,
-    above_cart: bool,
+    pub above_cart: bool,
 }
 /// Pendulum size
 pub const PENDULUM_RADIUS: f32 = 10.0;
@@ -49,6 +50,7 @@ const TRACK_WIDTH: f32 = 320.0;
 impl Default for Pendulum {
     fn default() -> Self {
         Pendulum {
+            applied_force: 0.0,
             tilt_angle: 0.0,
             position_error: 0.0,
             above_cart: false,
@@ -178,10 +180,10 @@ fn limit_horizontal_position(
 }
 
 fn calculate_pendulum_state(
-    cart_query: Query<&Transform, With<Cart>>,
+    cart_query: Query<(&Transform, &ExternalForce), With<Cart>>,
     mut pendulum_query: Query<(&mut Pendulum, &Transform)>,
 ) {
-    let cart = cart_query.single();
+    let (cart, force) = cart_query.single();
     let (mut pendulum, pendulum_translation) = pendulum_query.single_mut();
 
     pendulum.position_error = cart.translation.x;
@@ -196,6 +198,8 @@ fn calculate_pendulum_state(
             pendulum.tilt_angle = -180.0 - pendulum.tilt_angle;
         }
     }
+
+    pendulum.applied_force = force.force.x;
 
     println!("tilt {}, pos {}, above cart {}", pendulum.tilt_angle, pendulum.position_error, pendulum.above_cart);
 }
