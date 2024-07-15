@@ -28,7 +28,7 @@ const PENDULUM_CART_WIDTH: f32 = PENDULUM_CART_HEIGHT * 1.618;
 const CART_MASS: f32 = 100.0;
 const MAX_CART_SPEED: f32 = 250.0;
 // Force to apply to reach MAX_CART_SPEED in 2 secs
-const MOVING_FORCE: f32 = CART_MASS / 2.0 * 10.0 * MAX_CART_SPEED;
+pub const MOVING_FORCE: f32 = CART_MASS / 2.0 * 10.0 * MAX_CART_SPEED;
 
 /// Pendulum component for queries
 #[derive(Component)]
@@ -146,8 +146,6 @@ fn cart_control(
         cart_force.force.x = - MOVING_FORCE;
     } else if keyboard_input.pressed(KeyCode::ArrowRight) {
         cart_force.force.x = MOVING_FORCE;
-    } else {
-        cart_force.force.x = 0.0;
     }
 
     limit_horizontal_speed(&mut cart_velocity);
