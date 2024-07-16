@@ -136,6 +136,22 @@ fn setup_physics(
             ..default()
         },
     );
+
+    // Draw the position marker
+    commands.spawn(
+        MaterialMesh2dBundle {
+            mesh: Mesh2dHandle(meshes.add(Circle{radius: 2.0})),
+            material: materials.add(COLOR_WHITE),
+            transform: Transform {
+                translation: Vec3::new(0.0, -30.0, -10.0),
+                rotation: Quat::from_rotation_z(3.1415/2.0),
+                ..default()
+            },
+            ..default()
+        },
+    );
+
+
 }
 
 fn cart_control(
