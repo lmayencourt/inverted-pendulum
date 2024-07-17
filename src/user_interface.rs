@@ -45,6 +45,10 @@ fn draw_bottom_plots (
     history.positions.push([time.elapsed_seconds_f64(), pendulum.position.into()]);
     history.applied_forces.push([time.elapsed_seconds_f64(), pendulum.applied_force.into()]);
 
+    limit_vector_size(&mut history.tilt_angles, 800);
+    limit_vector_size(&mut history.positions, 800);
+    limit_vector_size(&mut history.applied_forces, 800);
+
     egui::TopBottomPanel::bottom("Cart speed").show(contexts.ctx_mut(), |ui| {
         egui_plot::Plot::new("State")
         .height(200.0)
@@ -75,6 +79,12 @@ fn draw_bottom_plots (
             plot_ui.line(Line::new(applied_force).name("force applied"));
         });
     });
+}
+
+fn limit_vector_size(vector:&mut Vec<[f64; 2]>, size: usize) {
+    if vector.len() > size {
+        vector.remove(0);
+    }
 }
 
 fn draw_control_panel(
