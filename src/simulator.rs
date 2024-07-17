@@ -35,7 +35,7 @@ pub const MOVING_FORCE: f32 = CART_MASS / 2.0 * 10.0 * MAX_CART_SPEED;
 pub struct Pendulum {
     pub applied_force: f32,
     pub tilt_angle: f32,
-    pub position_error: f32,
+    pub position: f32,
     pub above_cart: bool,
 }
 /// Pendulum size
@@ -52,7 +52,7 @@ impl Default for Pendulum {
         Pendulum {
             applied_force: 0.0,
             tilt_angle: 0.0,
-            position_error: 0.0,
+            position: 0.0,
             above_cart: false,
         }
     }
@@ -202,7 +202,7 @@ fn calculate_pendulum_state(
     let (cart, force) = cart_query.single();
     let (mut pendulum, pendulum_translation) = pendulum_query.single_mut();
 
-    pendulum.position_error = cart.translation.x;
+    pendulum.position = cart.translation.x;
     pendulum.above_cart = pendulum_translation.translation.y > cart.translation.y;
     pendulum.tilt_angle = f32::to_degrees(f32::asin((pendulum_translation.translation.x - cart.translation.x)/PENDULUM_HEIGHT));
     if !pendulum.above_cart {
@@ -217,5 +217,5 @@ fn calculate_pendulum_state(
 
     pendulum.applied_force = force.force.x;
 
-    println!("tilt {}, pos {}, above cart {}", pendulum.tilt_angle, pendulum.position_error, pendulum.above_cart);
+    println!("tilt {}, pos {}, above cart {}", pendulum.tilt_angle, pendulum.position, pendulum.above_cart);
 }
