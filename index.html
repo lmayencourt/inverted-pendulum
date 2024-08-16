@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <title>Inverted Pendulum</title>
+    
+<link rel="modulepreload" href="./inverted-pendulum-4f3a816e42948d74.js" crossorigin=anonymous integrity="sha384-r0zko4Yp3ZSARfiN1CYof5DnjUzN/QzcHqkCq6y4KmHeVNsOqHw709tqvkS/7Y0e">
+<link rel="preload" href="./inverted-pendulum-4f3a816e42948d74_bg.wasm" crossorigin=anonymous integrity="sha384-YJKIAQWaA7ZXmHGnq2v+EgwIn5yUKPHi5s6Kx+Eg3+BzcR4j6corZz2hgkOyDe/W" as="fetch" type="application/wasm"></head>
+    <body>
+        <div class="game-container">
+            <div class="lds-dual-ring"></div>
+            <canvas id="bevy">
+                Javascript and support for canvas is required
+            </canvas>
+        </div>
+    
+<script type="module" nonce="92/oXj5FBRaeDlHKCWw8Pw==">
+import init, * as bindings from './inverted-pendulum-4f3a816e42948d74.js';
+const wasm = await init('./inverted-pendulum-4f3a816e42948d74_bg.wasm');
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script></body>
+</html>
