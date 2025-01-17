@@ -5,6 +5,8 @@ The goal is to play with Rust simulation (bevy, rapier), graphics (egui) and mac
 
 This project is inspired by the [How to train simple AIs](https://www.youtube.com/watch?v=EvV5Qtp_fYg) video.
 
+Try it [online](https://lmayencourt.github.io/inverted-pendulum/)!
+
 ## Requirements overview
 Essential features are:
  - The program display an interactive pendulum simulation, with graphs info about position and speed of the pendulum.
